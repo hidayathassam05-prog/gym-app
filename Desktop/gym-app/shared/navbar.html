@@ -1,0 +1,57 @@
+<!-- SHARED NAVBAR COMPONENT -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="gym-logo-small">⚙️</span>
+    <h2>Gwadar Diesel Gym</h2>
+  </div>
+  <div class="nav-buttons">
+    <a href="dashboard.html" class="nav-btn" id="navDashboard">Dashboard</a>
+    <a href="workouts.html" class="nav-btn" id="navWorkouts">Workouts</a>
+    <a href="health.html" class="nav-btn" id="navHealth">Health</a>
+    <a href="goals.html" class="nav-btn" id="navGoals">Goals</a>
+    <a href="classes.html" class="nav-btn" id="navClasses" style="display:none;">Classes</a>
+    <a href="users.html" class="nav-btn" id="navUsers" style="display:none;">Users</a>
+    <a href="analytics.html" class="nav-btn" id="navAnalytics" style="display:none;">Analytics</a>
+    <a href="profile.html" class="nav-btn" id="navProfile">Profile</a>
+    <button class="nav-btn logout-btn" onclick="logoutHandler()">Logout</button>
+  </div>
+</nav>
+
+<script>
+  // Check user role and show/hide admin links
+  function updateNavigation() {
+    const role = localStorage.getItem(auth.currentUser?.uid + "_role") || "user";
+    
+    // Show admin/trainer specific links
+    if (role === 'admin' || role === 'trainer') {
+      document.getElementById("navClasses").style.display = "inline-block";
+    }
+    if (role === 'admin') {
+      document.getElementById("navUsers").style.display = "inline-block";
+      document.getElementById("navAnalytics").style.display = "inline-block";
+    }
+
+    // Highlight current page
+    const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      if (btn.getAttribute('href') === currentPage) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  // Logout handler
+  async function logoutHandler() {
+    if (confirm("Are you sure you want to logout?")) {
+      try {
+        await logout();
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', updateNavigation);
+</script>

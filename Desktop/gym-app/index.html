@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack - Professional Gym Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- AUTH SCREEN ONLY -->
+  <div id="authScreen" class="screen active">
+    <div class="auth-container">
+      <div class="gym-logo">⚙️</div>
+      <h1>FitTrack</h1>
+      <p class="subtitle">Professional Fitness Management System</p>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginTab" class="tab-content active">
+        <input type="email" id="loginEmail" placeholder="Email" class="input">
+        <input type="password" id="loginPassword" placeholder="Password" class="input">
+        <div class="login-info" style="font-size: 12px; color: #666; margin-top: 10px; padding: 8px; background: #f0f0f0; border-radius: 4px;">
+          <strong>🔒 Security:</strong><br>
+          • Account locks after 5 failed attempts<br>
+          • Lockout duration: 15 minutes<br>
+          • Session timeout: 30 minutes of inactivity
+        </div>
+        <button onclick="login()" class="btn btn-primary">Login</button>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupTab" class="tab-content">
+        <input type="text" id="signupName" placeholder="Full Name" class="input">
+        <input type="email" id="signupEmail" placeholder="Email" class="input">
+        
+        <div class="password-strength-section">
+          <label for="signupPassword" style="display: block; margin-bottom: 5px; font-weight: 600;">Password (with strength requirements)</label>
+          <input type="password" id="signupPassword" placeholder="Password (min 8 chars)" class="input" oninput="showPasswordStrength()">
+          <div id="passwordStrengthBar" class="password-strength-bar">
+            <div id="strengthIndicator" class="strength-indicator"></div>
+          </div>
+          <div id="strengthMessage" class="strength-message">Password strength: Weak</div>
+          
+          <div class="password-requirements">
+            <p><strong>Password must contain:</strong></p>
+            <p id="req-length" class="requirement unmet">✗ At least 8 characters</p>
+            <p id="req-upper" class="requirement unmet">✗ At least 1 uppercase letter (A-Z)</p>
+            <p id="req-lower" class="requirement unmet">✗ At least 1 lowercase letter (a-z)</p>
+            <p id="req-digit" class="requirement unmet">✗ At least 1 digit (0-9)</p>
+            <p id="req-special" class="requirement unmet">✗ At least 1 special character (@, #, $, %, !)</p>
+          </div>
+        </div>
+        
+        <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input">
+        
+        <select id="signupRole" class="input" onchange="showRoleInfo()">
+          <option value="user">Member</option>
+          <option value="trainer">Trainer</option>
+          <option value="admin">Administrator</option>
+        </select>
+        
+        <div class="role-info" id="roleInfo" style="font-size: 12px; color: #666; margin: 10px 0; padding: 8px; background: #f0f0f0; border-radius: 4px;">
+          Select your role to see available features
+        </div>
+        
+        <button onclick="signup()" class="btn btn-primary">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div id="dashboardScreen" class="screen">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <span class="gym-logo-small">⚙️</span>
+        <h2>FitTrack</h2>
+      </div>
+      <div class="navbar-right">
+        <div class="nav-buttons">
+          <button class="nav-btn" id="navDashboard" onclick="showSection('dashboard')">Dashboard</button>
+          <button class="nav-btn" id="navWorkouts" onclick="showSection('workouts')">Workouts</button>
+          <button class="nav-btn" id="navHealth" onclick="showSection('health')">Health</button>
+          <button class="nav-btn" id="navGoals" onclick="showSection('goals')">Goals</button>
+          <button class="nav-btn" id="navClasses" onclick="showSection('classes')" style="display:none;">Classes</button>
+          <button class="nav-btn" id="navUsers" onclick="showSection('users')" style="display:none;">Users</button>
+          <button class="nav-btn" id="navAnalytics" onclick="showSection('analytics')" style="display:none;">Analytics</button>
+          <button class="nav-btn" id="navProfile" onclick="showSection('profile')">Profile</button>
+          <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+        </div>
+        <div class="profile-nav" onclick="showSection('profile')">
+          <div class="profile-avatar" id="navProfileAvatar">👤</div>
+          <div class="profile-info-small">
+            <div class="name" id="navUserName">User</div>
+            <div class="role" id="navUserRole">Member</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboardSection" class="section active">
+      <div class="container">
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard" style="display:none;">
+          <div class="welcome-header">
+            <div>
+              <h2>Admin Dashboard</h2>
+              <p class="welcome-subtitle">Manage your gym operations</p>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <h3 id="adminMembersCount">0</h3>
+              <p>Total Members</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👨‍🏫</div>
+              <h3 id="adminTrainersCount">0</h3>
+              <p>Total Trainers</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📅</div>
+              <h3 id="adminClassesCount">0</h3>
+              <p>Active Classes</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <h3 id="adminRevenueCount">$0</h3>
+              <p>This Month</p>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+          
+          <div class="quick-access">
+            <h3>Quick Access</h3>
+            <div class="button-grid">
+              <button class="btn btn-secondary" onclick="showSection('users')">👥 Manage Members</button>
+              <button class="btn btn-secondary" onclick="showSection('classes')">📅 Manage Classes</button>
+              <button class="btn btn-secondary" onclick="showSection('analytics')">📊 View Analytics</button>
+              <button class="btn btn-secondary" onclick="showSection('profile')">⚙️ Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRAINER DASHBOARD -->
+        <div id="trainerDashboard" style="display:none;">
+          <div class="welcome-header">
+            <div>
+              <h2>Trainer Dashboard</h2>
+              <p class="welcome-subtitle">Manage your clients and classes</p>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <h3 id="trainerClientsCount">0</h3>
+              <p>Active Clients</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📅</div>
+              <h3 id="trainerClassesCount">0</h3>
+              <p>Scheduled Classes</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💪</div>
+              <h3 id="trainerWorkoutsCount">0</h3>
+              <p>Sessions This Week</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⭐</div>
+              <h3 id="trainerRatingCount">4.8</h3>
+              <p>Average Rating</p>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="recent-workouts">
+            <h3>Your Recent Sessions</h3>
+            <div id="trainerRecentList" class="workout-list">
+              <p class="empty-message">No sessions yet</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER DASHBOARD -->
+        <div id="memberDashboard" style="display:none;">
+          <div class="welcome-header">
+            <div>
+              <h2>Welcome, <span id="userName">User</span>!</h2>
+              <p class="welcome-subtitle">Role: <span id="userRole" class="role-badge">Member</span></p>
+            </div>
+            <div class="quick-actions">
+              <button class="btn btn-small" onclick="showSection('workouts')">+ Log Workout</button>
+              <button class="btn btn-small" onclick="showSection('health')">+ Log Health</button>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">💪</div>
+              <h3 id="workoutCount">0</h3>
+              <p>Workouts This Week</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <h3 id="totalSessions">0</h3>
+              <p>Total Sessions</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🔥</div>
+              <h3 id="caloriesBurned">0</h3>
+              <p>Calories Burned</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🎯</div>
+              <h3 id="streak">0</h3>
+              <p>Day Streak</p>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="recent-workouts">
+            <div class="section-header">
+              <h3>Recent Workouts</h3>
+              <button class="btn btn-secondary btn-small" onclick="showSection('workouts')">View All</button>
+            </div>
+            <div id="recentList" class="workout-list">
+              <p class="empty-message">No workouts yet. Start your fitness journey today!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKOUTS SECTION -->
+    <div id="workoutsSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>💪 Log Your Workout</h2>
+          <p class="section-subtitle">Track your fitness progress</p>
+        </div>
+        
+        <div class="workout-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Exercise Type</label>
+              <select id="exerciseType" class="input">
+                <option value="">Select Exercise</option>
+                <option value="Chest">Chest Press</option>
+                <option value="Legs">Leg Press</option>
+                <option value="Back">Back Rows</option>
+                <option value="Shoulders">Shoulder Press</option>
+                <option value="Cardio">Cardio</option>
+                <option value="Stretching">Stretching</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Duration (minutes)</label>
+              <input type="number" id="duration" placeholder="30" class="input" min="1">
+            </div>
+
+            <div class="form-group">
+              <label>Sets</label>
+              <input type="number" id="sets" placeholder="3" class="input" min="1">
+            </div>
+
+            <div class="form-group">
+              <label>Reps per Set</label>
+              <input type="number" id="reps" placeholder="10" class="input" min="1">
+            </div>
+
+            <div class="form-group">
+              <label>Calories Burned</label>
+              <input type="number" id="calories" placeholder="150" class="input" min="0">
+            </div>
+          </div>
+          
+          <button onclick="logWorkout()" class="btn btn-primary btn-lg">Log Workout</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="recent-workouts">
+          <div class="section-header">
+            <h3>All Workouts</h3>
+            <span class="badge" id="workoutBadge">0</span>
+          </div>
+          <div id="allWorkouts" class="workout-list">
+            <p class="empty-message">No workouts logged yet. Get started today!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEALTH SECTION -->
+    <div id="healthSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>🏥 Health & Wellness</h2>
+          <p class="section-subtitle">Monitor your health metrics</p>
+        </div>
+        
+        <!-- WATER INTAKE -->
+        <div class="card">
+          <div class="card-header">
+            <h3>💧 Daily Water Intake</h3>
+          </div>
+          <div class="water-tracker">
+            <div class="water-progress-container">
+              <div class="water-progress-bar">
+                <div id="waterProgress" class="water-progress-fill"></div>
+              </div>
+              <p id="waterToday">0ml / 2000ml</p>
+              <p id="waterPercent">0%</p>
+            </div>
+            <div style="margin-top: 20px;">
+              <div class="form-group">
+                <label>Add Water (ml)</label>
+                <input type="number" id="waterAmount" placeholder="250" class="input" min="1" max="1000">
+              </div>
+              <button onclick="logWaterIntake()" class="btn btn-primary">Log Water</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BODY MEASUREMENTS -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📏 Body Measurements</h3>
+          </div>
+          <div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Measurement Type</label>
+                <select id="measurementType" class="input">
+                  <option value="">Select Measurement</option>
+                  <option value="Chest">Chest</option>
+                  <option value="Waist">Waist</option>
+                  <option value="Arms">Arms</option>
+                  <option value="Thighs">Thighs</option>
+                  <option value="Weight">Weight (kg)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Value</label>
+                <input type="number" id="measurementValue" placeholder="0.0" class="input" step="0.1">
+              </div>
+            </div>
+            <button onclick="logMeasurement()" class="btn btn-primary">Log Measurement</button>
+          </div>
+          <div id="measurementsList" style="margin-top: 20px;">
+            <p class="empty-message">No measurements recorded yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOALS SECTION -->
+    <div id="goalsSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>🎯 Fitness Goals</h2>
+          <p class="section-subtitle">Set and track your fitness objectives</p>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3>Create a New Goal</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Goal Name</label>
+              <input type="text" id="goalName" placeholder="e.g., Lose 10kg" class="input">
+            </div>
+            <div class="form-group">
+              <label>Target</label>
+              <input type="text" id="goalTarget" placeholder="e.g., 80kg" class="input">
+            </div>
+            <div class="form-group">
+              <label>Deadline</label>
+              <input type="date" id="goalDeadline" class="input">
+            </div>
+          </div>
+          <button onclick="setGoal()" class="btn btn-primary">Create Goal</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="recent-workouts">
+          <div class="section-header">
+            <h3>Your Goals</h3>
+            <span class="badge" id="goalBadge">0</span>
+          </div>
+          <div id="goalsList" class="goals-list">
+            <p class="empty-message">No goals set yet. Start by creating your first goal!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASSES SECTION -->
+    <div id="classesSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>📅 Fitness Classes</h2>
+          <p class="section-subtitle">Join group training sessions</p>
+        </div>
+        
+        <div id="classList" class="class-list">
+          <p class="empty-message">No classes available at the moment. Check back soon!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN - USERS SECTION -->
+    <div id="usersSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>👥 Manage Users</h2>
+          <p class="section-subtitle">View and manage gym members</p>
+        </div>
+        
+        <div id="usersList" class="users-list">
+          <p class="empty-message">No users found</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN - ANALYTICS SECTION -->
+    <div id="analyticsSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>📊 Gym Analytics</h2>
+          <p class="section-subtitle">Monitor gym performance</p>
+        </div>
+        
+        <div id="analyticsContainer">
+          <p class="empty-message">Loading analytics...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div id="profileSection" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>👤 User Profile</h2>
+          <p class="section-subtitle">Your account information and statistics</p>
+        </div>
+        
+        <!-- PROFILE HEADER WITH PICTURE UPLOAD -->
+        <div class="profile-header">
+          <div class="profile-avatar-large" id="profileAvatarLarge" onclick="document.getElementById('profilePictureInput').click()">
+            👤
+            <div class="upload-badge" title="Click to upload profile picture">📷</div>
+          </div>
+          <input type="file" id="profilePictureInput" accept="image/*" onchange="uploadProfilePicture(event)">
+          
+          <div class="profile-info">
+            <h2 id="profileName">-</h2>
+            <span class="badge badge-primary" id="profileRole">Member</span>
+            
+            <div class="profile-detail">
+              <div class="detail-item">
+                <div class="detail-label">Email</div>
+                <div class="detail-value" id="profileEmail">-</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Member Since</div>
+                <div class="detail-value" id="memberDate">-</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Total Workouts</div>
+                <div class="detail-value" id="statTotal">0</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Total Hours</div>
+                <div class="detail-value" id="statHours">0h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- ACHIEVEMENTS SECTION -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🏆 Achievements</h3>
+          </div>
+          <div class="achievements-grid" id="achievementsGrid">
+            <div class="achievement" id="ach-first-workout" data-name="First Workout" data-desc="Log your first workout">
+              <div class="achievement-icon">🏃</div>
+              <div class="achievement-name">First Workout</div>
+              <div class="achievement-desc">Complete your first exercise</div>
+            </div>
+            <div class="achievement" id="ach-week-warrior" data-name="Week Warrior" data-desc="Workout 7 days in a row">
+              <div class="achievement-icon">⚡</div>
+              <div class="achievement-name">Week Warrior</div>
+              <div class="achievement-desc">7-day streak</div>
+            </div>
+            <div class="achievement" id="ach-century" data-name="Century Club" data-desc="Log 100 workouts">
+              <div class="achievement-icon">💯</div>
+              <div class="achievement-name">Century Club</div>
+              <div class="achievement-desc">100 workouts</div>
+            </div>
+            <div class="achievement" id="ach-hydration" data-name="Hydration Master" data-desc="Reach 2L water 10 times">
+              <div class="achievement-icon">💧</div>
+              <div class="achievement-name">Hydration Master</div>
+              <div class="achievement-desc">Daily hydration goal x10</div>
+            </div>
+            <div class="achievement" id="ach-goal-setter" data-name="Goal Setter" data-desc="Create your first fitness goal">
+              <div class="achievement-icon">🎯</div>
+              <div class="achievement-name">Goal Setter</div>
+              <div class="achievement-desc">Create a fitness goal</div>
+            </div>
+            <div class="achievement" id="ach-calorie-burner" data-name="Calorie Burner" data-desc="Burn 5000 calories">
+              <div class="achievement-icon">🔥</div>
+              <div class="achievement-name">Calorie Burner</div>
+              <div class="achievement-desc">5000 calories burned</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- STATS SUMMARY -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📊 Performance Summary</h3>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">💪</div>
+              <h3 id="statCalories">0</h3>
+              <p>Total Calories Burned</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⏱️</div>
+              <h3 id="totalMinutes">0</h3>
+              <p>Total Minutes</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🎯</div>
+              <h3 id="completedGoals">0</h3>
+              <p>Completed Goals</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📈</div>
+              <h3 id="streak">0</h3>
+              <p>Current Streak</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <button onclick="deleteAccount()" class="btn btn-danger">⚠️ Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECURITY ENHANCEMENT SCRIPTS ============ -->
+  <script>
+    // PASSWORD STRENGTH INDICATOR
+    function showPasswordStrength() {
+      const password = document.getElementById("signupPassword").value;
+      const requirements = {
+        minLength: password.length >= 8,
+        hasUppercase: /[A-Z]/.test(password),
+        hasLowercase: /[a-z]/.test(password),
+        hasDigit: /[0-9]/.test(password),
+        hasSpecialChar: /[@#$%!]/.test(password)
+      };
+
+      // Update requirement indicators
+      updateRequirement("req-length", requirements.minLength);
+      updateRequirement("req-upper", requirements.hasUppercase);
+      updateRequirement("req-lower", requirements.hasLowercase);
+      updateRequirement("req-digit", requirements.hasDigit);
+      updateRequirement("req-special", requirements.hasSpecialChar);
+
+      // Calculate strength
+      const strength = Object.values(requirements).filter(Boolean).length;
+      updateStrengthBar(strength);
+    }
+
+    function updateRequirement(elementId, isMet) {
+      const element = document.getElementById(elementId);
+      if (isMet) {
+        element.classList.remove("unmet");
+        element.classList.add("met");
+      } else {
+        element.classList.remove("met");
+        element.classList.add("unmet");
+      }
+    }
+
+    function updateStrengthBar(strength) {
+      const indicator = document.getElementById("strengthIndicator");
+      const message = document.getElementById("strengthMessage");
+      
+      indicator.className = "strength-indicator";
+      
+      switch(strength) {
+        case 0:
+        case 1:
+          indicator.classList.add("weak");
+          message.textContent = "Password strength: Very Weak ⛔";
+          message.style.color = "#f56565";
+          break;
+        case 2:
+          indicator.classList.add("fair");
+          message.textContent = "Password strength: Weak ⚠️";
+          message.style.color = "#ed8936";
+          break;
+        case 3:
+          indicator.classList.add("good");
+          message.textContent = "Password strength: Fair ℹ️";
+          message.style.color = "#ecc94b";
+          break;
+        case 4:
+          indicator.classList.add("strong");
+          message.textContent = "Password strength: Strong ✓";
+          message.style.color = "#48bb78";
+          break;
+        case 5:
+          indicator.classList.add("very-strong");
+          message.textContent = "Password strength: Very Strong ✓✓";
+          message.style.color = "#38a169";
+          break;
+      }
+    }
+
+    // ROLE INFORMATION DISPLAY
+    function showRoleInfo() {
+      const role = document.getElementById("signupRole").value;
+      const roleInfo = document.getElementById("roleInfo");
+      
+      const descriptions = {
+        user: "👤 Member: Track your personal workouts, health data, goals, and progress.",
+        trainer: "👨‍🏫 Trainer: Create classes, manage assigned members, and track their progress.",
+        admin: "🔐 Administrator: Full system access including user management, analytics, and security controls."
+      };
+      
+      roleInfo.textContent = descriptions[role] || "Select a role";
+    }
+
+    // Tab switching function
+    function switchTab(tabName) {
+      // Hide all tabs
+      const tabs = document.querySelectorAll(".tab-content");
+      tabs.forEach(tab => tab.classList.remove("active"));
+      
+      // Remove active class from all buttons
+      const buttons = document.querySelectorAll(".tab-btn");
+      buttons.forEach(btn => btn.classList.remove("active"));
+      
+      // Show selected tab
+      document.getElementById(tabName + "Tab").classList.add("active");
+      event.target.classList.add("active");
+    }
+
+    // Export functions to window for global access
+    window.showPasswordStrength = showPasswordStrength;
+    window.showRoleInfo = showRoleInfo;
+    window.switchTab = switchTab;
+  </script>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Tracking - Gwadar Diesel Gym</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbar-container"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="dashboard-screen">
+    <div id="healthSection" class="section active">
+      <div class="container">
+        <div class="section-header">
+          <h2>❤️ Health Tracking</h2>
+          <p class="section-subtitle">Monitor your health metrics</p>
+        </div>
+
+        <!-- WATER INTAKE TRACKER -->
+        <div class="health-card">
+          <h3>💧 Water Intake Tracker</h3>
+          <div class="water-tracker">
+            <div class="form-group">
+              <label for="waterAmount">Amount (ml)</label>
+              <input type="number" id="waterAmount" class="input" placeholder="250">
+            </div>
+            <button onclick="logWater()" class="btn btn-primary">Log Water</button>
+          </div>
+          <p id="totalWater" class="water-display">Total Today: 0 ml</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- BODY MEASUREMENTS -->
+        <div class="health-card">
+          <h3>📏 Body Measurements</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <input type="number" id="weight" class="input" placeholder="75">
+            </div>
+            <div class="form-group">
+              <label for="height">Height (cm)</label>
+              <input type="number" id="height" class="input" placeholder="180">
+            </div>
+            <div class="form-group">
+              <label for="waist">Waist (cm)</label>
+              <input type="number" id="waist" class="input" placeholder="85">
+            </div>
+            <div class="form-group">
+              <label for="chest">Chest (cm)</label>
+              <input type="number" id="chest" class="input" placeholder="100">
+            </div>
+            <div class="form-group">
+              <label for="arms">Arm Size (cm)</label>
+              <input type="number" id="arms" class="input" placeholder="30">
+            </div>
+            <div class="form-group">
+              <label for="thighs">Thigh Size (cm)</label>
+              <input type="number" id="thighs" class="input" placeholder="55">
+            </div>
+          </div>
+          <button onclick="logMeasurement()" class="btn btn-primary btn-lg">Save Measurements</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- MEASUREMENTS HISTORY -->
+        <div class="health-card">
+          <h3>📊 Measurement History</h3>
+          <div id="measurementsList" class="measurements-list">
+            <p class="empty-message">No measurements recorded yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED SCRIPTS -->
+  <script type="module" src="app.js"></script>
+  <script type="module" src="pages/health-page.js"></script>
+</body>
+</html>

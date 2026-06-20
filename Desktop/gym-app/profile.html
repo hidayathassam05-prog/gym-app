@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Gwadar Diesel Gym</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbar-container"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="dashboard-screen">
+    <div id="profileSection" class="section active">
+      <div class="container">
+        <div class="section-header">
+          <h2>👤 User Profile</h2>
+          <p class="section-subtitle">Your account information and statistics</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div>
+              <h3 id="profileName">-</h3>
+              <p id="profileRole" class="role-badge">Member</p>
+            </div>
+          </div>
+
+          <div class="profile-info">
+            <div class="info-row">
+              <span class="label">Email:</span>
+              <span id="profileEmail">-</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Member Since:</span>
+              <span id="memberDate">-</span>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- PROFILE STATS -->
+          <div class="profile-stats">
+            <h4>Your Statistics</h4>
+            <div class="stat-item">
+              <span class="stat-label">Total Workouts</span>
+              <span class="stat-value" id="statWorkouts">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Goals</span>
+              <span class="stat-value" id="statGoals">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Hours</span>
+              <span class="stat-value" id="statHours">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Calories</span>
+              <span class="stat-value" id="statCalories">0</span>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <!-- ACTIVITY LOG -->
+          <div class="activity-log-section">
+            <h4>📋 Your Activity Log</h4>
+            <div id="userActivityLog" class="activity-list">
+              <p class="empty-message">No recent activities</p>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <button onclick="deleteAccountHandler()" class="btn btn-danger">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED SCRIPTS -->
+  <script type="module" src="app.js"></script>
+  <script type="module" src="pages/profile-page.js"></script>
+</body>
+</html>

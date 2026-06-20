@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Gwadar Diesel Gym</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbar-container"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="dashboard-screen">
+    <div id="usersSection" class="section active">
+      <div class="container">
+        <div class="section-header">
+          <h2>👥 Manage Users</h2>
+          <p class="section-subtitle">View and manage gym members (Admin Only)</p>
+        </div>
+
+        <!-- SECURITY SECTION -->
+        <div class="admin-card">
+          <h3>🔒 Security Management</h3>
+          <div class="security-info">
+            <p><strong>Failed Login Attempts:</strong> <span id="failedAttempts">0</span></p>
+            <p><strong>Locked Accounts:</strong> <span id="lockedAccounts">0</span></p>
+            <p><strong>Active Sessions:</strong> <span id="activeSessions">0</span></p>
+          </div>
+          <button onclick="viewSecurityLog()" class="btn btn-secondary">View Security Log</button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- USERS LIST -->
+        <div class="users-list-section">
+          <h3>System Users</h3>
+          <div id="usersList" class="users-list">
+            <p class="empty-message">No users found</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED SCRIPTS -->
+  <script type="module" src="app.js"></script>
+  <script type="module" src="pages/users-page.js"></script>
+</body>
+</html>

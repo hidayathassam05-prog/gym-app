@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - Gwadar Diesel Gym</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbar-container"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="dashboard-screen">
+    <div id="analyticsSection" class="section active">
+      <div class="container">
+        <div class="section-header">
+          <h2>📊 Gym Analytics</h2>
+          <p class="section-subtitle">Monitor gym performance and statistics (Admin Only)</p>
+        </div>
+
+        <div id="analyticsContainer" class="analytics-section">
+          <p class="empty-message">Loading analytics...</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- RECENT ACTIVITY LOG -->
+        <div class="activity-section">
+          <h3>📋 Recent Activities</h3>
+          <div id="activityLog" class="activity-list">
+            <p class="empty-message">No recent activities</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARED SCRIPTS -->
+  <script type="module" src="app.js"></script>
+  <script type="module" src="pages/analytics-page.js"></script>
+</body>
+</html>
